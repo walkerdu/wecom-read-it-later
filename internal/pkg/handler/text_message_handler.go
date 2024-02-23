@@ -63,12 +63,13 @@ func (t *TextMessageHandler) HandleMessage(msg wecom.MessageIF) (wecom.MessageIF
 func (t *TextMessageHandler) DBSet(msg *wecom.TextMessageReq) (*wecom.TextMessageRsp, error) {
 	ctx := context.Background()
 	date := time.Now().Format("20060102")
-	result, err := HandlerInst().redisClient.LPush(ctx, msg.FromUserName+"_"+date, msg.Content).Result()
+	key := msg.FromUserName + "_" + date
+	result, err := HandlerInst().redisClient.LPush(ctx, key, msg.Content).Result()
 	if err != nil {
 		log.Printf("[ERROR][DBSet] redis LPush failed, err=%s", err)
 		return nil, err
 	}
 
-	log.Printf("[DEBUG][DBSet] redis LPush success, result=%v", result)
+	log.Printf("[DEBUG][DBSet] redis LPush success, key:%v, value:%v, result=%v", key, msg.Content, result)
 	return nil, nil
 }
