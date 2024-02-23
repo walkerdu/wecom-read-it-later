@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/walkerdu/wecom-backend/pkg/chatbot"
+	//"github.com/walkerdu/wecom-backend/pkg/chatbot"
 	"github.com/walkerdu/wecom-backend/pkg/wecom"
 )
 
@@ -47,11 +47,11 @@ func (t *TextMessageHandler) HandleMessage(msg wecom.MessageIF) (wecom.MessageIF
 	} else {
 	}
 
-	chatRsp, err := chatbot.MustChatbot().GetResponse(textMsg.FromUserName, textMsg.Content)
-	if err != nil {
-		log.Printf("[ERROR][HandleMessage] chatbot.GetResponse failed, err=%s", err)
-		chatRsp = "chatbot something wrong, errMsg:" + err.Error()
-	}
+	//chatRsp, err := chatbot.MustChatbot().GetResponse(textMsg.FromUserName, textMsg.Content)
+	//if err != nil {
+	//	log.Printf("[ERROR][HandleMessage] chatbot.GetResponse failed, err=%s", err)
+	//	chatRsp = "chatbot something wrong, errMsg:" + err.Error()
+	//}
 
 	textMsgRsp := wecom.TextMessageRsp{
 		Content: chatRsp,
