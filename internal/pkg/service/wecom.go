@@ -65,16 +65,29 @@ func (svr *WeComServer) Serve() error {
 }
 
 func (svr *WeComServer) ReviewPubishing() {
-	ticker := time.NewTicker(1 * time.Minute)
-	defer ticker.Stop()
+	now := time.Now()
+	awakeTime := time.Date(now.Year(), now.Month(), now.Day(), 23, 0, 0, 0, now.Location())
+
+	if now.After(awakeTime) {
+		awakeTime = awakeTime.Add(24 * time.Hour)
+	}
+
+	// 计算距离下次执行的时间间隔
+	duration := awakeTime.Sub(now)
+
+	// 创建一个定时器，在距离下次执行的时间间隔后触发
+	timer := time.NewTimer(duration)
 
 	for {
 		select {
-		case <-ticker.C:
+		case <-timer.C:
 			log.Printf("[INFO] ReviewPubishing()")
 			txtHandler, _ := handler.HandlerInst().GetLogicHandler(wecom.MessageTypeText).(*handler.TextMessageHandler)
 			txtHandler.Review()
 		}
+
+		// 重新设置定时器，以实现每天定时执行
+		timer.Reset(24 * time.Hour)
 	}
 }
 
