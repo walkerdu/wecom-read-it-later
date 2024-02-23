@@ -83,7 +83,7 @@ func main() {
 
 	// 优雅退出
 	exitc := make(chan struct{})
-	setupGracefulExitHook(exitc)
+	setupGracefulExitHook(exitc, ws)
 
 	// 每天进行review通知
 	go ws.ReviewPubishing()
@@ -92,7 +92,7 @@ func main() {
 	ws.Serve()
 }
 
-func setupGracefulExitHook(exitc chan struct{}) {
+func setupGracefulExitHook(exitc chan struct{}, ws *service.WeComServer) {
 	log.Printf("[INFO] setupGracefulExitHook()")
 	signalCh := make(chan os.Signal, 1)
 	signal.Notify(signalCh, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
@@ -102,6 +102,7 @@ func setupGracefulExitHook(exitc chan struct{}) {
 		log.Printf("Got %s signal", sig)
 
 		close(exitc)
+		ws.Shutdown()
 	}()
 }
 

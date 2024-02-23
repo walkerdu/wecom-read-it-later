@@ -57,7 +57,7 @@ func (svr *WeComServer) Serve() error {
 	log.Printf("[INFO] Server()")
 
 	if err := svr.httpSvr.ListenAndServe(); nil != err {
-		log.Fatalf("httpSvr ListenAndServe() failed, err=%s", err)
+		log.Printf("httpSvr ListenAndServe() failed, err=%s", err)
 		return err
 	}
 
