@@ -107,7 +107,7 @@ func (t *TextMessageHandler) SummaryBase(ctx context.Context, key string) (strin
 
 	summary := ""
 	for idx, val := range vals {
-		summary += strconv.Itoa(idx) + ". " + val + "\n"
+		summary += strconv.Itoa(idx+1) + ". " + val + "\n"
 	}
 
 	log.Printf("[DEBUG][SummaryBase] redis LRange success, key:%v, value:%v", key, vals)
