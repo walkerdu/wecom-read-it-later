@@ -182,15 +182,15 @@ func (t *TextMessageHandler) SummaryMonth(msg *wecom.TextMessageReq) (string, er
 
 func (t *TextMessageHandler) Review() {
 	ctx := context.Background()
-	date := time.Now().AddDate(0, 0, -1).Format("20060102")
+	date := time.Now().Format("20060102")
 	key := "walkerdu" + "_" + date
 
 	summarys, err := t.SummaryBase(ctx, key)
 	if err != nil {
-		HandlerInst().publisher("walkerdu", "yesterday data get failed, err:\n"+err.Error())
+		HandlerInst().publisher("walkerdu", "today data get failed, err:\n"+err.Error())
 	}
 
-	HandlerInst().publisher("walkerdu", "yesterday:\n"+summarys)
+	HandlerInst().publisher("walkerdu", "today:\n"+summarys)
 
 	date = time.Now().Format("200601")
 	keyPrefix := "walkerdu" + "_" + date
