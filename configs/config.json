@@ -10,12 +10,13 @@
             "agent_token": "your_agent_token",
             "agent_encoding_aes_key": "your_agent_encoding_aes_key"
         },
-        "addr": "listten_addr",
-        "notify_config" : {
-            "md_blog":  {
-                "user_id" : "walkerdu"
-            }
-        }
+        "addr": "listten_addr"
+    },
+    "redis" : {
+        "addr" : "redis addr, localhost:6379",
+        "username": "username, default",
+        "password" : "password",
+        "db" : 0
     }
 }
 
