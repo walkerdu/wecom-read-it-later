@@ -59,6 +59,11 @@ func (t *TextMessageHandler) HandleMessage(msg wecom.MessageIF) (wecom.MessageIF
 			chatRsp, err = t.SummaryDay(textMsg)
 		}
 
+		// 指令请求，保证无数据也返回消息
+		if chatRsp == "" && err == nil {
+			chatRsp = "no data"
+		}
+
 		break
 	}
 
