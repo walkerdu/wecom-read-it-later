@@ -38,6 +38,9 @@ func NewWeComServer(config *configs.WeComConfig) (*WeComServer, error) {
 	// 注册聊天消息的异步推送回调
 	chatbot.MustChatbot().RegsiterMessagePublish(svr.wc.PushTextMessage)
 
+	// 注册推送回调
+	handler.HandlerInst().SetPublish(svr.wc.PushTextMessage)
+
 	return svr, nil
 }
 
@@ -59,6 +62,20 @@ func (svr *WeComServer) Serve() error {
 	}
 
 	return nil
+}
+
+func (svr *WeComServer) ReviewPubishing() {
+	ticker := time.NewTicker(1 * time.Minute)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			log.Printf("[INFO] ReviewPubishing()")
+			txtHandler, _ := handler.HandlerInst().GetLogicHandler(wecom.MessageTypeText).(*handler.TextMessageHandler)
+			txtHandler.Review()
+		}
+	}
 }
 
 func (svr *WeComServer) Shutdown() error {

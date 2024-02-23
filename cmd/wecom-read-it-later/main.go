@@ -81,12 +81,15 @@ func main() {
 		log.Fatal("[ALERT] NewWeComServer() failed")
 	}
 
-	log.Printf("[INFO] start Serve()")
-	ws.Serve()
-
 	// 优雅退出
 	exitc := make(chan struct{})
 	setupGracefulExitHook(exitc)
+
+	// 每天进行review通知
+	go ws.ReviewPubishing()
+
+	log.Printf("[INFO] start Serve()")
+	ws.Serve()
 }
 
 func setupGracefulExitHook(exitc chan struct{}) {

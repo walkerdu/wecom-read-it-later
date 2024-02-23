@@ -26,6 +26,7 @@ type Handler struct {
 	logicHandlerMap map[wecom.MessageType]LogicHandler
 
 	redisClient *redis.Client
+	publisher   func(string, string) error
 }
 
 // NewHandler 返回一个新的Handler实例
@@ -47,6 +48,15 @@ func (h *Handler) GetLogicHandlerMap() map[wecom.MessageType]LogicHandler {
 	return h.logicHandlerMap
 }
 
+func (h *Handler) GetLogicHandler(mType wecom.MessageType) LogicHandler {
+	logicHandler, _ := h.logicHandlerMap[mType]
+	return logicHandler
+}
+
 func (h *Handler) SetRedisClient(rdb *redis.Client) {
 	h.redisClient = rdb
+}
+
+func (h *Handler) SetPublish(publisher func(string, string) error) {
+	h.publisher = publisher
 }
