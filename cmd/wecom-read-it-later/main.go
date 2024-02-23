@@ -70,9 +70,10 @@ func main() {
 
 	// init redis client
 	redisClient := initRedisClient(&config.Redis)
-	if nil != redisClient {
+	if nil == redisClient {
 		log.Fatalf("[ALERT] initRedisClient failed failed, addr=%v", config.Redis)
 	}
+
 	handler.HandlerInst().SetRedisClient(redisClient)
 
 	ws, err := service.NewWeComServer(&config.WeCom)
