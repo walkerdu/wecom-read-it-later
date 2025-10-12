@@ -40,3 +40,22 @@ lint: deps codegen
 
 test : deps codegen
 	go test ./...
+
+build: all
+	git_branch_name=$$(git rev-parse --abbrev-ref HEAD);\
+	git_checkout_sha_short=$$(git rev-parse --short=8 HEAD);\
+	for service_name in `ls build`; do\
+		dockerfile_path="build/$$service_name/Dockerfile";\
+		if [ ! -f $$dockerfile_path ];then\
+			echo "$$dockerfile_path not exist";\
+			exit -1;\
+		fi;\
+		app_version=`grep -e ^appVersion chart/$$service_name/Chart.yaml|awk -F '[ |"]' '{if(NF>2){print $$(NF-1)}else{print $$NF}}'`;\
+		if [ x"$$app_version" == x"" ];then\
+			app_version="0.0.0";\
+		fi;\
+		image_target="$$service_name:$$app_version-$$git_branch_name.$$git_checkout_sha_short";\
+		docker build -t $$service_name:$$git_branch_name -f $$dockerfile_path .;\
+		docker tag $$service_name:$$git_branch_name $$image_target;\
+		docker push $$image_target;\
+	done
