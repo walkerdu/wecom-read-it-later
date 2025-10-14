@@ -10,14 +10,14 @@ on:
     branches: [ "master" ]
 
 env:
-  IMAGE_REGISTRY_URL: krccr.ccs.tencentyun.com
-  IMAGE_REGISTRY_NS: toolbox
+  IMAGE_REGISTRY_URL: docker.io
+  IMAGE_REGISTRY_NS: walkerdu
 jobs:
   build:
     runs-on: ubuntu:24.04
     steps:
     - name: Check out
-    - uses: actions/checkout@v4
+      uses: actions/checkout@v4
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -48,7 +48,7 @@ jobs:
               app_version="0.0.0"
           fi
         
-          image_target="$service_name:$app_version-$git_branch_name.$git_checkout_sha_short"
+          image_target="$IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_NS/$service_name:$app_version-$git_branch_name.$git_checkout_sha_short"
 
           date
           docker build -t $service_name:$git_branch_name .
