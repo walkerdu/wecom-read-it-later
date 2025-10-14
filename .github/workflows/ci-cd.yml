@@ -35,6 +35,9 @@ jobs:
         set -x
         git_branch_name=$(git rev-parse --abbrev-ref HEAD)
         git_checkout_sha_short=$(git rev-parse --short=8 HEAD)
+
+        echo "GIT_BRANCH_NAME=$git_branch_name" >> $GITHUB_ENV
+        echo "GIT_BRANCH_SAH_SHORT=$git_checkout_sha_short" >> $GITHUB_ENV
         
         for service_name in `ls build`; do
           dockerfile_path="build/$service_name/Dockerfile"
@@ -72,16 +75,16 @@ jobs:
             app_version=`grep -e ^appVersion $chart_path|awk -F '[ |"]' '{if(NF>2){print $(NF-1)}else{print $NF}}'`
             chart_version=`grep -e ^version $chart_path|awk -F '[ |"]' '{if(NF>2){print $(NF-1)}else{print $NF}}'`
         
-            image_target="$IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_NS/$service_name:$app_version-$git_branch_name.$git_checkout_sha_short"
+            image_target="$IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_NS/$service_name:$app_version-${{env.GIT_BRANCH_NAME}}.${{env.GIT_BRANCH_SAH_SHORT}}"
             image_exist=`docker images -f "reference=$image_target"|wc -l`
             if [ $image_exist -ne 2 ];then
                 echo "$image_target not exist"
                 exit -3
             fi
         
-            app_version=$app_version-${{git_branch_name}}.${{git_checkout_sha_short}}
-            default_chart_version=$chart_version-${{git_branch_name}}
-            chart_version=$chart_version-${{git_branch_name}}.${{git_checkout_sha_short}}
+            app_version=$app_version-${{env.GIT_BRANCH_NAME}}.${{env.GIT_BRANCH_SAH_SHORT}}
+            default_chart_version=$chart_version-${{env.GIT_BRANCH_NAME}}
+            chart_version=$chart_version-${{env.GIT_BRANCH_NAME}}.${{env.GIT_BRANCH_SAH_SHORT}}
             
         
             helm cm-push $service_name --version=$chart_version --app-version=$app_version codev-backend -f
