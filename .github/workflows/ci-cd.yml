@@ -54,7 +54,7 @@ jobs:
           image_target="$IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_NS/$service_name:$app_version-$git_branch_name.$git_checkout_sha_short"
 
           date
-          docker build -t $service_name:$git_branch_name .
+          docker build -t $service_name:$git_branch_name -f $dockerfile_path .
           date
           docker tag $service_name:$git_branch_name $image_target
           #docker login --username xxx --password xxx mirrors.tencent.com
