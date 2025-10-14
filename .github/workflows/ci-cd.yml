@@ -13,7 +13,7 @@ env:
   IMAGE_REGISTRY_URL: docker.io
   IMAGE_REGISTRY_NS: walkerdu
 jobs:
-  build:
+  ci:
     runs-on: ubuntu:24.04
     steps:
     - name: Check out
