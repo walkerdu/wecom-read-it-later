@@ -77,9 +77,11 @@ jobs:
             chart_version=`grep -e ^version $chart_path|awk -F '[ |"]' '{if(NF>2){print $(NF-1)}else{print $NF}}'`
             
             image_target="$IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_NS/$service_name:$app_version-${{env.GIT_BRANCH_NAME}}.${{env.GIT_BRANCH_SAH_SHORT}}"
-            docker images -f "reference=$image_target"
-            image_exist=`docker images -f "reference=$image_target"|wc -l`
-            if [ $image_exist -ne 2 ];then
+            # docker.io的Docker Hub会在docker images列表中默认不显示，所以需要支持一下
+            image_target_short="$service_name:$app_version-${{env.GIT_BRANCH_NAME}}.${{env.GIT_BRANCH_SAH_SHORT}}"
+
+            image_exist=`docker images -f "reference=$image_target" -f "reference=$image_target_short"|wc -l`
+            if [[ $image_exist -lt 2 ]];then
                 echo "$image_target not exist"
                 exit -3
             fi
