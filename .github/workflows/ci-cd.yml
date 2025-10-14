@@ -12,6 +12,7 @@ on:
 env:
   IMAGE_REGISTRY_URL: docker.io
   IMAGE_REGISTRY_NS: walkerdu
+  IMAGE_REGISTRY_USERNAME: walkerdu
 jobs:
   ci-cd:
     runs-on: ubuntu-latest
@@ -57,7 +58,7 @@ jobs:
           docker build -t $service_name:$git_branch_name -f $dockerfile_path .
           date
           docker tag $service_name:$git_branch_name $image_target
-          #docker login --username xxx --password xxx mirrors.tencent.com
+          docker login --username $IMAGE_REGISTRY_USERNAME --password ${{secrets.DOCKER_HUB_TOKEN}} $IMAGE_REGISTRY_URL
           docker push $image_target
           date
         done
