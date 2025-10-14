@@ -1,0 +1,61 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: CI/CD
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  IMAGE_REGISTRY_URL: krccr.ccs.tencentyun.com
+  IMAGE_REGISTRY_NS: toolbox
+jobs:
+  build:
+    runs-on: ubuntu:24.04
+    steps:
+    - name: Check out
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+
+    - name: Build
+      run: make
+
+    #- name: Test
+    #  run: go test -v ./...
+
+    - name: Build the Docker image
+      run: |
+        set -x
+        git_branch_name=$(git rev-parse --abbrev-ref HEAD)
+        git_checkout_sha_short=$(git rev-parse --short=8 HEAD)
+        
+        for service_name in `ls build`; do
+          dockerfile_path="build/$service_name/Dockerfile"
+          if [ ! -f $dockerfile_path ];then
+              echo "$dockerfile_path not exist"
+              exit -1
+          fi
+        
+          app_version=`grep -e ^appVersion chart/$service_name/Chart.yaml|awk -F '[ |"]' '{if(NF>2){print $(NF-1)}else{print $NF}}'`
+          if [ x"$app_version" == x"" ];then
+              app_version="0.0.0"
+          fi
+        
+          image_target="$service_name:$app_version-$git_branch_name.$git_checkout_sha_short"
+
+          date
+          docker build -t $service_name:$git_branch_name .
+          date
+          docker tag $service_name:$git_branch_name $image_target
+          #docker login --username xxx --password xxx mirrors.tencent.com
+          docker push $image_target
+          date
+        done
+
