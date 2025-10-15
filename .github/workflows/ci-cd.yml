@@ -112,15 +112,15 @@ jobs:
             fi
 
             cp -R $service_name $helm_chart_dir/
-            sed -i '/^version/ c\version: $chart_version' $helm_chart_dir/$service_name/Chart.yaml
-            sed -i '/^appVersion/ c\appVersion: "$app_version"' $helm_chart_dir/$service_name/Chart.yaml
+            sed -i "/^version/ c\version: $chart_version" $helm_chart_dir/$service_name/Chart.yaml
+            sed -i "/^appVersion/ c\appVersion: \"$app_version\"" $helm_chart_dir/$service_name/Chart.yaml
             cd $helm_chart_dir
             
             git add $service_name
             git commit -m "refresh $service_name version:$chart_version appVersion: $app_version" .
             git push origin master
 
-            sed -i '/^version/ c\version: $default_chart_version' $helm_chart_dir/$service_name/Chart.yaml
+            sed -i "/^version/ c\version: $default_chart_version" $helm_chart_dir/$service_name/Chart.yaml
             git commit -m "refresh $service_name version:$chart_version appVersion: $app_version" .
             git push origin master
             
