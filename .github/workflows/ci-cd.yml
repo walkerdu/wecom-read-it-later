@@ -20,6 +20,13 @@ jobs:
     - name: Check out
       uses: actions/checkout@v4
 
+    - name: Checkout helm-charts repo
+      uses: actions/checkout@v4
+      with:
+        repository: git@github.com:walkerdu/helm-charts.git
+        #token: ${{ secrets.PAT }}
+        #path: docs-dir
+
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
@@ -33,6 +40,8 @@ jobs:
 
     - name: Build the Docker image
       run: |
+        pwd
+        ls
         set -x
         git_branch_name=$(git rev-parse --abbrev-ref HEAD)
         git_checkout_sha_short=$(git rev-parse --short=8 HEAD)
@@ -89,14 +98,16 @@ jobs:
             app_version=$app_version-${{env.GIT_BRANCH_NAME}}.${{env.GIT_BRANCH_SAH_SHORT}}
             default_chart_version=$chart_version-${{env.GIT_BRANCH_NAME}}
             chart_version=$chart_version-${{env.GIT_BRANCH_NAME}}.${{env.GIT_BRANCH_SAH_SHORT}}
-            
-            helm_install=`which helm || echo $?`
+
+            # 初始化helm
+            helm_install=`which he1lm >/dev/null 2>&1; echo $?`
             if [ $helm_install -ne 0 ];then
                 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
                 helm plugin install https://github.com/chartmuseum/helm-push
-                #helm repo add xxxx http://username:password@helm.bkrepo.oa.com/xxx
             fi
+            #helm repo add xxxx http://username:password@helm.bkrepo.oa.com/xxx
             #helm cm-push $service_name --version=$chart_version --app-version=$app_version xxxx -f
             #helm cm-push $service_name --version=$default_chart_version --app-version=$app_version xxxx -f
         done
+        
 
