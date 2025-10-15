@@ -90,8 +90,13 @@ jobs:
             default_chart_version=$chart_version-${{env.GIT_BRANCH_NAME}}
             chart_version=$chart_version-${{env.GIT_BRANCH_NAME}}.${{env.GIT_BRANCH_SAH_SHORT}}
             
-        
-            helm cm-push $service_name --version=$chart_version --app-version=$app_version codev-backend -f
-            helm cm-push $service_name --version=$default_chart_version --app-version=$app_version codev-backend -f
+            helm_install=`which helm || echo $?`
+            if [ $helm_install -ne 0 ];then
+                curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+                helm plugin install https://github.com/chartmuseum/helm-push
+                #helm repo add xxxx http://username:password@helm.bkrepo.oa.com/xxx
+            fi
+            #helm cm-push $service_name --version=$chart_version --app-version=$app_version xxxx -f
+            #helm cm-push $service_name --version=$default_chart_version --app-version=$app_version xxxx -f
         done
 
