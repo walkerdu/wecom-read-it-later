@@ -23,9 +23,9 @@ jobs:
     - name: Checkout helm-charts repo
       uses: actions/checkout@v4
       with:
-        repository: git@github.com:walkerdu/helm-charts.git
+        repository: walkerdu/helm-charts.git
         ref: master
-        #token: ${{ secrets.PAT }}
+        token: ${{ secrets.WALKERDU_REPO_PRIVATE_KEY }}
         path: helm-charts
 
     - name: Set up Go
