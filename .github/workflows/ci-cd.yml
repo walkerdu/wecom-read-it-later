@@ -127,7 +127,7 @@ jobs:
             cd -
 
             # 初始化helm
-            helm_install=`which he1lm >/dev/null 2>&1; echo $?`
+            helm_install=`which helm >/dev/null 2>&1; echo $?`
             if [ $helm_install -ne 0 ];then
                 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
                 helm plugin install https://github.com/chartmuseum/helm-push
