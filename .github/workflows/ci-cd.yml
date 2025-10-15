@@ -101,6 +101,26 @@ jobs:
             default_chart_version=$chart_version-${{env.GIT_BRANCH_NAME}}
             chart_version=$chart_version-${{env.GIT_BRANCH_NAME}}.${{env.GIT_BRANCH_SAH_SHORT}}
 
+            helm_chart_dir=$GITHUB_WORKSPACE/helm-charts/charts
+            if -f $helm_chart_dir/$service_name ];then
+                rm -rf $helm_chart_dir/$service_name
+            fi
+
+            cp -R $service_name $helm_chart_dir/
+            sed -i '/^version/ c\version: $chart_version' $helm_chart_dir/$service_name/Chart.yaml
+            sed -i '/^appVersion/ c\appVersion: "$app_version"' $helm_chart_dir/$service_name/Chart.yaml
+            cd $helm_chart_dir
+            
+            git add $service_name
+            git commit -m "refresh $service_name version:$chart_version appVersion: $app_version" .
+            git push origin master
+
+            sed -i '/^version/ c\version: $default_chart_version' $helm_chart_dir/$service_name/Chart.yaml
+            git commit -m "refresh $service_name version:$chart_version appVersion: $app_version" .
+            git push origin master
+            
+            cd -
+
             # 初始化helm
             helm_install=`which he1lm >/dev/null 2>&1; echo $?`
             if [ $helm_install -ne 0 ];then
