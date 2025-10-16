@@ -18,11 +18,11 @@ openai:
   apiKey: ""
 wecom:
   corpId: "ww27122bb2cdfd43f2"
-  agentId: 1000005,
+  agentId: 1000005
   agentSecret: "CQtEcmUJHeHrYRCZfCvCiFnCrxsMyKkRwSUr3vxlDmw"
   agentToken: "dslyyvq"
   agentEncodingAesKey: "4ARC5PtVuUx4lu13LW5g2fHO6CcnwJ1nC2TJkDQWEeR"
-reids:
+redis:
   addr: "redis-14380.c326.us-east-1-3.ec2.cloud.redislabs.com:14380"
   username: "default"
   password: "cwNAFXh8PG4aoIj5caXH7BhXSlBMpgFa"
