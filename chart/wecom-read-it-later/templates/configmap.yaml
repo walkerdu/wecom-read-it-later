@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: ConfigMap 
+metadata:
+  name: {{ include "wecom-read-it-later.fullname" . }}
+  labels:
+    {{- include "wecom-read-it-later.labels" . | nindent 4 }}
+
+data:
+  config.json: |
+    {
+        "open_ai": {
+            "api_key": "{{ .Values.openai.apiKey }}"
+        },
+        "we_com": {
+            "agent_config": {
+                "corp_id": "{{ .Values.wecom.corpId }}",
+                "agent_id": {{ .Values.wecom.agentId }},
+                "agent_secret": "{{ .Values.wecom.agentSecret }}",
+                "agent_token": "{{ .Values.wecom.agentToken }}",
+                "agent_encoding_aes_key": "{{ .Values.wecom.agentEncodingAesKey }}"
+            },
+            "addr": ":80"
+        },
+        "redis" : {
+            "addr" : "{{ .Values.redis.addr }}",
+            "username": "{{ .Values.redis.username }}",
+            "password" : "{{ .Values.redis.password }}",
+            "db" : {{ .Values.redis.db }}
+        }
+    }
